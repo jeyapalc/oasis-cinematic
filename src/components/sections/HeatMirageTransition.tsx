@@ -10,7 +10,6 @@ export function HeatMirageTransition() {
         offset: ["start end", "end start"],
     });
 
-    const blur = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 6, 6, 0]);
     const scaleX = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.02, 1]);
     const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
@@ -43,7 +42,6 @@ export function HeatMirageTransition() {
             {/* Editorial quote */}
             <div className="relative z-10 flex items-center justify-center h-full px-6">
                 <motion.blockquote
-                    style={{ filter: blur.get ? undefined : undefined }}
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.5 }}
