@@ -100,43 +100,43 @@ function CactusScene() {
 
     return (
         <>
-            {/* ── BACKGROUND cacti ── far away, small, subtle */}
+            {/* ── BACKGROUND cacti ── far away, large but distant */}
             <ParallaxLayer speed={1} baseY={0}>
-                <group position={[0, -1, -8]} scale={0.6}>
+                <group position={[0, -2, -12]} scale={3}>
                     {background.map((mesh, i) => (
                         <primitive
                             key={`bg-${i}`}
                             object={mesh}
-                            position={[(i - background.length / 2) * 4, 0, -2 * i]}
+                            position={[(i - background.length / 2) * 6, 0, -3 * i]}
                         />
                     ))}
                 </group>
             </ParallaxLayer>
 
-            {/* ── MIDGROUND cacti ── medium distance, mid-scale */}
+            {/* ── MIDGROUND cacti ── medium distance, prominent */}
             <ParallaxLayer speed={3} baseY={0}>
-                <group position={[0, -1, -2]} scale={1}>
+                <group position={[0, -2, -3]} scale={5}>
                     {midground.map((mesh, i) => (
                         <primitive
                             key={`mg-${i}`}
                             object={mesh}
-                            position={[(i - midground.length / 2) * 3.5, 0, -1.5 * i]}
+                            position={[(i - midground.length / 2) * 5, 0, -2 * i]}
                         />
                     ))}
                 </group>
             </ParallaxLayer>
 
-            {/* ── FOREGROUND cacti ── close, large, partially obstructs text */}
+            {/* ── FOREGROUND cacti ── close, huge, partially obstructs text */}
             <ParallaxLayer speed={6} baseY={0}>
-                <group position={[0, -1, 4]} scale={1.8}>
+                <group position={[0, -2, 3]} scale={8}>
                     {foreground.map((mesh, i) => (
                         <primitive
                             key={`fg-${i}`}
                             object={mesh}
                             position={[
-                                (i % 2 === 0 ? -3.5 : 3.5) + i * 0.5,
+                                (i % 2 === 0 ? -2.5 : 2.5) + i * 0.8,
                                 0,
-                                i * 1.5,
+                                i * 2,
                             ]}
                         />
                     ))}
