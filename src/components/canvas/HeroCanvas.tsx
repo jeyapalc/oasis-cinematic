@@ -1,28 +1,32 @@
 "use client";
 
 import { useGLTF, OrbitControls, Environment, ContactShadows } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
-import { Suspense } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Suspense, useRef } from "react";
+import * as THREE from "three";
 
-function Scene() {
-    const { scene } = useGLTF("/models/oasis-model.glb");
+function CactusScene() {
+    const { scene } = useGLTF("/models/cactus.glb");
+    const groupRef = useRef<THREE.Group>(null);
+
+    // Gentle floating animation
+    useFrame((state) => {
+        if (groupRef.current) {
+            groupRef.current.rotation.y = state.clock.elapsedTime * 0.15;
+            groupRef.current.position.y = -0.8 + Math.sin(state.clock.elapsedTime * 0.5) * 0.05;
+        }
+    });
 
     return (
-        <group position={[0, -1, 0]}>
-            {/* 
-        The provided STL wasn't pre-textured, so we'll assign a basic cinematic sand/terracotta material
-        to all its meshes by traversing the scene graph. 
-      */}
-            <primitive
-                object={scene}
-                scale={0.05} // Scale down the raw STL conversion which is often huge
-            />
+        <group ref={groupRef} position={[0, -0.8, 0]}>
+            <primitive object={scene} scale={1.5} />
             <ContactShadows
-                position={[0, 0, 0]}
-                opacity={0.4}
-                scale={50}
-                blur={2}
-                far={10}
+                position={[0, -0.01, 0]}
+                opacity={0.35}
+                scale={10}
+                blur={2.5}
+                far={4}
+                color="#2e231e"
             />
         </group>
     );
@@ -30,36 +34,47 @@ function Scene() {
 
 export function HeroCanvas() {
     return (
-        <div className="absolute inset-0 z-0 bg-dune">
-            <Canvas camera={{ position: [5, 2, 8], fov: 45 }}>
-                <color attach="background" args={["#f2e1d0"]} />
-                <ambientLight intensity={0.5} />
+        <div className="absolute inset-0 z-0">
+            <Canvas
+                camera={{ position: [4, 2, 5], fov: 40 }}
+                gl={{ antialias: true, alpha: true }}
+                style={{ background: "transparent" }}
+            >
+                {/* Warm desert lighting */}
+                <ambientLight intensity={0.6} color="#f2e1d0" />
                 <directionalLight
-                    position={[10, 10, 5]}
-                    intensity={1.5}
+                    position={[8, 10, 5]}
+                    intensity={2}
+                    color="#ffecd2"
                     castShadow
-                    shadow-bias={-0.0001}
+                    shadow-mapSize={[1024, 1024]}
+                />
+                <directionalLight
+                    position={[-5, 3, -5]}
+                    intensity={0.4}
+                    color="#b87333"
                 />
 
-                {/* Soft studio lighting to feel high-end */}
-                <Environment preset="city" />
+                {/* Environment for reflections */}
+                <Environment preset="sunset" />
 
                 <Suspense fallback={null}>
-                    <Scene />
+                    <CactusScene />
                 </Suspense>
 
-                {/* Cinematic slow pan controls */}
+                {/* Slow auto-rotate, no zoom/pan */}
                 <OrbitControls
                     autoRotate
-                    autoRotateSpeed={0.5}
+                    autoRotateSpeed={0.4}
                     enableZoom={false}
                     enablePan={false}
-                    maxPolarAngle={Math.PI / 2 + 0.1}
-                    minPolarAngle={Math.PI / 3}
+                    maxPolarAngle={Math.PI / 2}
+                    minPolarAngle={Math.PI / 4}
                 />
             </Canvas>
-            {/* Overlay gradient to blend bottom of canvas into the next section */}
-            <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-sand to-transparent pointer-events-none" />
+
+            {/* Gradient fade into next section */}
+            <div className="absolute bottom-0 w-full h-40 bg-gradient-to-t from-sand to-transparent pointer-events-none" />
         </div>
     );
 }
